@@ -4,6 +4,7 @@ const {
   app,
   BrowserWindow,
   WebContentsView,
+  dialog,
   ipcMain,
   shell,
   Menu,
@@ -123,6 +124,7 @@ const WINDOW_BACKGROUND = '#050507';
 const VIEW_BACKGROUND = '#0a0a0d';
 const DEFAULT_EMBED_INSETS = { left: 15, top: 155, right: 15, bottom: 15 };
 const DEFAULT_EMBED_RADIUS = 19;
+const BILLING_WIDTH_WARNING_THRESHOLD = 1137;
 const ALLOWED_PERMISSIONS = new Set([
   'notifications',
   'fullscreen',
@@ -148,13 +150,16 @@ let passcodeConfigured = false;
 let isLocked = false;
 let passcodeFailures = 0;
 let passcodeLockoutUntil = 0;
+let billingWidthWarningOpen = false;
+let billingWidthWarningSuppressed = false;
 
 let store = {
   activeTab: 0,
   maximized: false,
   bounds: null,
   autoStart: true,
-  startMinimized: false
+  startMinimized: false,
+  neverRemindBillingWidth: false
 };
 
 const serviceSessions = new Set();
@@ -244,6 +249,7 @@ function readStore() {
       store.maximized = raw.maximized === true;
       store.autoStart = raw.autoStart !== false;
       store.startMinimized = raw.startMinimized === true;
+      store.neverRemindBillingWidth = raw.neverRemindBillingWidth === true;
       if (
         raw.bounds &&
         ['x', 'y', 'width', 'height'].every((key) => Number.isFinite(raw.bounds[key]))
@@ -271,7 +277,8 @@ function writeStore() {
       maximized: mainWindow.isMaximized(),
       bounds,
       autoStart: store.autoStart,
-      startMinimized: store.startMinimized
+      startMinimized: store.startMinimized,
+      neverRemindBillingWidth: store.neverRemindBillingWidth
     };
     fs.mkdirSync(path.dirname(storePath()), { recursive: true });
     fs.writeFileSync(storePath(), JSON.stringify(data, null, 2));
@@ -505,6 +512,41 @@ function layoutViews() {
   }
 }
 
+function maybeWarnBillingWidth() {
+  const eligible = mainWindow && !mainWindow.isDestroyed() && !isLocked &&
+    appPage === null && activeTab === 0 &&
+    mainWindow.getBounds().width < BILLING_WIDTH_WARNING_THRESHOLD;
+  if (!eligible) {
+    billingWidthWarningSuppressed = false;
+    return;
+  }
+  if (store.neverRemindBillingWidth || billingWidthWarningOpen || billingWidthWarningSuppressed) return;
+
+  billingWidthWarningSuppressed = true;
+  billingWidthWarningOpen = true;
+  dialog.showMessageBox(mainWindow, {
+    type: 'warning',
+    title: 'Billing Area window is narrow',
+    message: 'The Billing Area may not work perfectly when the app window is under 1137 pixels wide.',
+    detail: 'Make the window wider for the best experience.',
+    buttons: ['OK', 'Never remind me again'],
+    defaultId: 0,
+    cancelId: 0,
+    noLink: true
+  }).then(({ response }) => {
+    if (response === 1) {
+      store.neverRemindBillingWidth = true;
+      writeStore();
+    }
+  }).catch(() => {}).finally(() => {
+    billingWidthWarningOpen = false;
+    if (mainWindow && !mainWindow.isDestroyed() &&
+      (appPage !== null || activeTab !== 0 || mainWindow.getBounds().width >= BILLING_WIDTH_WARNING_THRESHOLD)) {
+      billingWidthWarningSuppressed = false;
+    }
+  });
+}
+
 function activateTab(index) {
   if (isLocked) return;
   if (!mainWindow || mainWindow.isDestroyed() || views.length === 0) return;
@@ -528,6 +570,7 @@ function activateTab(index) {
   updateDiscordPresence();
   queueStoreWrite();
   sendState();
+  maybeWarnBillingWidth();
 }
 
 // ---------------------------------------------------------------------------
@@ -830,6 +873,7 @@ function createWindow() {
   mainWindow.on('resize', () => {
     layoutViews();
     queueStoreWrite();
+    maybeWarnBillingWidth();
   });
   mainWindow.on('move', queueStoreWrite);
   mainWindow.on('close', writeStore);
@@ -1049,6 +1093,7 @@ function registerIpc() {
     appPage = 'settings';
     for (let index = 0; index < views.length; index += 1) syncViewVisibility(index);
     layoutViews();
+    maybeWarnBillingWidth();
     if (uiContents && !uiContents.isDestroyed()) uiContents.send('app:page', appPage);
   });
   ipcMain.on('app:page', (_event, page) => {
@@ -1056,6 +1101,7 @@ function registerIpc() {
     appPage = page === 'settings' || page === 'discord' || page === 'welcome' ? page : null;
     for (let index = 0; index < views.length; index += 1) syncViewVisibility(index);
     layoutViews();
+    maybeWarnBillingWidth();
   });
   ipcMain.handle('discord:connect', () => {
     if (isLocked) return { ok: false };
