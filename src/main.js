@@ -8,6 +8,7 @@ const {
   ipcMain,
   shell,
   Menu,
+  safeStorage,
   session,
   clipboard,
   screen
@@ -165,17 +166,39 @@ let store = {
 const serviceSessions = new Set();
 
 const storePath = () => path.join(app.getPath('userData'), 'window-state.json');
-const discordCredentialsPath = () => path.join(app.getPath('userData'), 'discord-rpc.enc');
 const passcodePath = () => path.join(app.getPath('userData'), 'passcode.json');
 
-function readPasscode() {
+async function writePasscodeRecord(record) {
+  if (!await safeStorage.isAsyncEncryptionAvailable()) {
+    throw new Error('OS secure storage is unavailable.');
+  }
+  const encrypted = await safeStorage.encryptStringAsync(JSON.stringify(record));
+  const tempPath = `${passcodePath()}.tmp`;
+  fs.mkdirSync(path.dirname(passcodePath()), { recursive: true });
+  fs.writeFileSync(tempPath, JSON.stringify({ version: 2, encrypted: encrypted.toString('base64') }), { mode: 0o600 });
+  fs.renameSync(tempPath, passcodePath());
+}
+
+async function readPasscode() {
   try {
     const filePath = passcodePath();
     if (!fs.existsSync(filePath)) return;
     passcodeConfigured = true;
     const raw = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    if (raw && typeof raw.salt === 'string' && typeof raw.hash === 'string') {
-      passcodeRecord = raw;
+    let record = raw;
+    if (raw && raw.version === 2 && typeof raw.encrypted === 'string') {
+      if (!await safeStorage.isAsyncEncryptionAvailable()) {
+        throw new Error('OS secure storage is unavailable.');
+      }
+      const decrypted = await safeStorage.decryptStringAsync(Buffer.from(raw.encrypted, 'base64'));
+      record = JSON.parse(decrypted.result);
+      if (decrypted.shouldReEncrypt) await writePasscodeRecord(record);
+    } else if (raw && typeof raw.salt === 'string' && typeof raw.hash === 'string') {
+      // Migrate legacy plaintext hash records to OS-backed encrypted storage.
+      if (await safeStorage.isAsyncEncryptionAvailable()) await writePasscodeRecord(raw);
+    }
+    if (record && typeof record.salt === 'string' && typeof record.hash === 'string') {
+      passcodeRecord = record;
     }
     isLocked = true;
     appPage = 'passcode';
@@ -1044,10 +1067,11 @@ function registerIpc() {
     }
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = (await scrypt(value.passcode, salt, 64)).toString('hex');
-    const tempPath = `${passcodePath()}.tmp`;
-    fs.mkdirSync(path.dirname(passcodePath()), { recursive: true });
-    fs.writeFileSync(tempPath, JSON.stringify({ salt, hash }), { mode: 0o600 });
-    fs.renameSync(tempPath, passcodePath());
+    try {
+      await writePasscodeRecord({ salt, hash });
+    } catch {
+      return { ok: false, error: 'Could not securely save the passcode on this device.' };
+    }
     passcodeRecord = { salt, hash };
     passcodeConfigured = true;
     sendState();
@@ -1246,7 +1270,7 @@ if (!gotLock) {
     hardenWebContents(contents);
   });
 
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     app.setAppUserModelId('uk.elysiannodes.hub');
     Menu.setApplicationMenu(null);
 
@@ -1257,7 +1281,7 @@ if (!gotLock) {
     } else if (!hasSavedStore && autoStartSupported && app.isPackaged) {
       applyAutoStart();
     }
-    readPasscode();
+    await readPasscode();
     configureSessions();
     registerIpc();
     createWindow();
