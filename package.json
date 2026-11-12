@@ -5,7 +5,7 @@
   "description": "ElysianNodes client hub - billing, game panel and webhosting in one desktop app",
   "main": "src/main.js",
   "author": "ElysianNodes",
-  "license": "UNLICENSED",
+  "license": "GPL-3.0-only",
   "private": true,
   "scripts": {
     "start": "electron .",

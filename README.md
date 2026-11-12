@@ -38,4 +38,4 @@ The installer is written to `dist/` and is excluded from version control.
 
 ## License
 
-This repository does not currently include an open source license. All rights are reserved unless the project owner states otherwise.
+This project is licensed under the GNU General Public License v3.0 only. See [LICENSE](LICENSE) for the full terms.
