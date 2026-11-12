@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ElysianNodes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <svg class="svg-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-billing" viewBox="0 0 24 24">
+        <rect x="2.75" y="5.25" width="18.5" height="13.5" rx="2.4" />
+        <path d="M2.75 9.4h18.5" />
+        <path d="M6.4 14.6h4.1" />
+        <path d="M16.1 13.2v2.8" />
+        <path d="M14.7 14.6h2.8" />
+      </symbol>
+
+      <symbol id="icon-gamepad" viewBox="0 0 24 24">
+        <path d="M6 11h4" />
+        <path d="M8 9v4" />
+        <path d="M15 12h.01" />
+        <path d="M18 10h.01" />
+        <path
+          d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5Z"
+        />
+      </symbol>
+
+      <symbol id="icon-globe" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18" />
+        <path d="M12 3a15.3 15.3 0 0 1 0 18a15.3 15.3 0 0 1 0-18Z" />
+      </symbol>
+
+      <symbol id="icon-back" viewBox="0 0 24 24">
+        <path d="M14.5 5.5 8 12l6.5 6.5" />
+      </symbol>
+
+      <symbol id="icon-forward" viewBox="0 0 24 24">
+        <path d="M9.5 5.5 16 12l-6.5 6.5" />
+      </symbol>
+
+      <symbol id="icon-reload" viewBox="0 0 24 24">
+        <path d="M20 11.5a8 8 0 1 0-.9 4.6" />
+        <path d="M20 5.5v6h-6" />
+      </symbol>
+
+      <symbol id="icon-stop" viewBox="0 0 24 24">
+        <path d="M7 7l10 10" />
+        <path d="M17 7 7 17" />
+      </symbol>
+
+      <symbol id="icon-external" viewBox="0 0 24 24">
+        <path d="M13.5 4.5H19.5V10.5" />
+        <path d="M19.5 4.5 11 13" />
+        <path d="M18 14.5v4a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6h4" />
+      </symbol>
+
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <rect x="5.25" y="10.25" width="13.5" height="9.5" rx="2" />
+        <path d="M8.5 10.25V7.8a3.5 3.5 0 0 1 7 0v2.45" />
+        <path d="M12 14v2.2" />
+      </symbol>
+
+      <symbol id="icon-unlock" viewBox="0 0 24 24">
+        <rect x="5.25" y="10.25" width="13.5" height="9.5" rx="2" />
+        <path d="M8.5 10.25V7.8a3.5 3.5 0 0 1 6.8-1.2" />
+        <path d="M12 14v2.2" />
+      </symbol>
+
+      <symbol id="icon-copy" viewBox="0 0 24 24">
+        <rect x="8.5" y="8.5" width="11" height="11" rx="2" />
+        <path d="M15.5 8.5v-2a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2" />
+      </symbol>
+
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="m5.5 12.5 4 4 9-9" />
+      </symbol>
+
+      <symbol id="icon-min" viewBox="0 0 24 24">
+        <path d="M5.5 12h13" />
+      </symbol>
+
+      <symbol id="icon-max" viewBox="0 0 24 24">
+        <rect x="5.5" y="5.5" width="13" height="13" rx="1.6" />
+      </symbol>
+
+      <symbol id="icon-restore" viewBox="0 0 24 24">
+        <rect x="4.5" y="8.5" width="11" height="11" rx="1.6" />
+        <path d="M8.5 8.5v-2a1.5 1.5 0 0 1 1.5-1.5h8a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-2" />
+      </symbol>
+
+      <symbol id="icon-close" viewBox="0 0 24 24">
+        <path d="m6.5 6.5 11 11" />
+        <path d="m17.5 6.5-11 11" />
+      </symbol>
+
+      <symbol id="icon-alert" viewBox="0 0 24 24">
+        <path d="M10.3 4.4 2.7 17.6A2 2 0 0 0 4.4 20.6h15.2a2 2 0 0 0 1.7-3L13.7 4.4a2 2 0 0 0-3.4 0Z" />
+        <path d="M12 9v4.3" />
+        <path d="M12 16.7h.01" />
+      </symbol>
+
+      <symbol id="icon-settings" viewBox="0 0 24 24">
+        <path d="M9.8 3.2h4.4l.5 2.1c.6.2 1.1.5 1.6.9l2-.8 2.2 3.8-1.6 1.4v1.8l1.6 1.4-2.2 3.8-2-.8c-.5.4-1 .7-1.6.9l-.5 2.1H9.8l-.5-2.1c-.6-.2-1.1-.5-1.6-.9l-2 .8-2.2-3.8 1.6-1.4v-1.8L3.5 9.2l2.2-3.8 2 .8c.5-.4 1-.7 1.6-.9l.5-2.1Z" />
+        <circle cx="12" cy="11.5" r="2.6" />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <header class="titlebar">
+        <div class="wordmark">ElysianNodes</div>
+        <div class="titlebar-grip" aria-hidden="true"></div>
+        <div class="window-actions">
+          <button class="win-btn" id="win-min" type="button" title="Minimize" aria-label="Minimize window">
+            <svg class="icon"><use href="#icon-min" /></svg>
+          </button>
+          <button class="win-btn" id="win-max" type="button" title="Maximize" aria-label="Maximize window">
+            <svg class="icon icon-max"><use href="#icon-max" /></svg>
+            <svg class="icon icon-restore"><use href="#icon-restore" /></svg>
+          </button>
+          <button class="win-btn win-close" id="win-close" type="button" title="Close" aria-label="Close window">
+            <svg class="icon"><use href="#icon-close" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <nav class="tabbar" role="tablist" aria-label="ElysianNodes services">
+        <button class="tab is-active" type="button" role="tab" aria-selected="true" data-tab="0">
+          <span class="tab-icon"><svg class="icon"><use href="#icon-billing" /></svg></span>
+          <span class="tab-label">Billing Area</span>
+          <span class="tab-badge" aria-hidden="true"><span class="spinner"></span></span>
+        </button>
+
+        <button class="tab" type="button" role="tab" aria-selected="false" data-tab="1">
+          <span class="tab-icon"><svg class="icon"><use href="#icon-gamepad" /></svg></span>
+          <span class="tab-label">Game Panel</span>
+          <span class="tab-badge" aria-hidden="true"><span class="spinner"></span></span>
+        </button>
+
+        <button class="tab" type="button" role="tab" aria-selected="false" data-tab="2">
+          <span class="tab-icon"><svg class="icon"><use href="#icon-globe" /></svg></span>
+          <span class="tab-label">Webhosting Panel</span>
+          <span class="tab-badge" aria-hidden="true"><span class="spinner"></span></span>
+        </button>
+      </nav>
+
+      <div class="toolbar">
+        <div class="addressbar">
+          <div class="nav-group">
+            <button class="tool-btn" id="back" type="button" title="Back (Alt+Left)" aria-label="Go back" disabled>
+              <svg class="icon"><use href="#icon-back" /></svg>
+            </button>
+            <button class="tool-btn" id="forward" type="button" title="Forward (Alt+Right)" aria-label="Go forward" disabled>
+              <svg class="icon"><use href="#icon-forward" /></svg>
+            </button>
+            <button class="tool-btn" id="reload" type="button" title="Reload (Ctrl+R)" aria-label="Reload page">
+              <svg class="icon icon-reload"><use href="#icon-reload" /></svg>
+              <svg class="icon icon-stop"><use href="#icon-stop" /></svg>
+            </button>
+          </div>
+
+          <div class="address" id="address">
+            <span class="address-lock" id="lock" title="Secure HTTPS connection">
+              <svg class="icon icon-locked"><use href="#icon-lock" /></svg>
+              <svg class="icon icon-unlocked"><use href="#icon-unlock" /></svg>
+            </span>
+            <span class="address-url">
+              <span class="address-host" id="url-host">billing.elysiannodes.uk</span>
+              <span class="address-path" id="url-path">/</span>
+            </span>
+            <button class="address-action" id="copy" type="button" title="Copy URL" aria-label="Copy URL">
+              <svg class="icon icon-copy"><use href="#icon-copy" /></svg>
+              <svg class="icon icon-copied"><use href="#icon-check" /></svg>
+            </button>
+          </div>
+
+          <button class="tool-btn external-btn" id="external" type="button" title="Open in default browser" aria-label="Open in default browser">
+            <svg class="icon"><use href="#icon-external" /></svg>
+          </button>
+          <button class="tool-btn settings-btn" id="open-settings" type="button" title="Settings" aria-label="Settings">
+            <svg class="icon"><use href="#icon-settings" /></svg>
+          </button>
+
+          <div class="progress" aria-hidden="true"><span class="progress-bar"></span></div>
+        </div>
+      </div>
+
+      <main class="content">
+        <section class="app-page passcode-page" id="passcode-page" hidden>
+          <div class="passcode-card">
+            <div class="passcode-mark"><img src="../assets/icon.ico" alt="" /></div>
+            <h1>Welcome back.</h1>
+            <p>Enter your app passcode to continue to your services.</p>
+            <form id="passcode-unlock-form">
+              <label for="unlock-passcode">Passcode</label>
+              <input id="unlock-passcode" type="password" autocomplete="current-password" required autofocus />
+              <button class="btn btn-primary" id="unlock-button" type="submit">Unlock app <span>→</span></button>
+            </form>
+            <p class="save-status" id="unlock-status" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+        <section class="app-page welcome-page" id="welcome-page" hidden>
+          <div class="welcome-content">
+            <div class="welcome-brand"><img src="../assets/icon.ico" alt="" /><span>ELYSIANNODES</span></div>
+            <div class="welcome-hero">
+              <div class="welcome-copy">
+                <h1>Welcome to<br /><em>ElysianNodes.</em></h1>
+                <p>A simpler way to reach the services behind your servers. Open your billing area, manage game servers, and access webhosting from one focused desktop app.</p>
+                <button class="btn btn-primary welcome-cta" id="welcome-start" type="button">Explore your hub <span>→</span></button>
+                <small class="welcome-footnote">Your account is still secured by ElysianNodes. Sign in with your usual details.</small>
+              </div>
+              <div class="welcome-visual" aria-hidden="true">
+                <div class="welcome-orb"></div><div class="welcome-grid"></div>
+                <div class="welcome-window">
+                  <div class="welcome-window-top"><span></span><span></span><span></span></div>
+                  <div class="welcome-window-body"><div class="welcome-window-nav"><i></i><i></i><i></i></div><div class="welcome-window-main"><small>YOUR CONTROL CENTER</small><strong>Everything<br />within reach.</strong><div><span>Billing</span><span>Game panel</span><span>Webhosting</span></div></div></div>
+                </div>
+                <div class="welcome-float welcome-float-one"><span>01</span> BILLING</div><div class="welcome-float welcome-float-two"><span>02</span> GAME PANEL</div>
+              </div>
+            </div>
+            <div class="welcome-features">
+              <div><span>01</span><strong>One desktop hub</strong><small>Move between your ElysianNodes dashboards without juggling browser tabs.</small></div>
+              <div><span>02</span><strong>Your services, connected</strong><small>Quick access to billing, game server management, and webhosting.</small></div>
+              <div><span>03</span><strong>Made for everyday use</strong><small>A dedicated app with navigation and helpful shortcuts built in.</small></div>
+            </div>
+            <div class="welcome-bottom"><span>Built to make managing your hosting feel a little more seamless.</span></div>
+          </div>
+        </section>
+        <section class="app-page" id="settings-page" hidden>
+          <div class="page-content">
+            <button class="page-back" type="button" data-page-back>← <span>Back to services</span></button>
+            <h1>Settings</h1>
+            <p class="page-intro">Choose how ElysianNodes starts and manage integrations.</p>
+            <section class="page-group" aria-labelledby="startup-title">
+              <h2 id="startup-title">Startup</h2>
+              <label class="setting-row"><span class="setting-copy"><strong>Start on boot</strong><small>Open ElysianNodes when you sign in to your computer.</small></span><input id="auto-start" type="checkbox" /></label>
+              <label class="setting-row"><span class="setting-copy"><strong>Start minimized</strong><small>Keep the window minimized when launched on boot.</small></span><input id="start-minimized" type="checkbox" /></label>
+              <p class="note" id="platform-note" hidden>Automatic startup is available on Windows and macOS.</p>
+            </section>
+            <section class="page-group passcode-settings" aria-labelledby="passcode-settings-title">
+              <div class="integration">
+                <div>
+                <h2 id="passcode-settings-title">App passcode</h2>
+                <p id="passcode-description">Protect ElysianNodes with a passcode when the app opens.</p>
+                </div>
+                <div class="passcode-row-actions">
+                  <button class="btn btn-secondary" id="configure-passcode" type="button">Configure</button>
+                  <button class="btn btn-secondary" id="remove-passcode" type="button" hidden>Remove</button>
+                </div>
+              </div>
+              <p class="save-status" id="passcode-status" role="status" aria-live="polite"></p>
+            </section>
+            <div class="passcode-modal" id="passcode-modal" hidden>
+              <section class="passcode-dialog" role="dialog" aria-modal="true" aria-labelledby="passcode-modal-heading">
+                <div class="passcode-dialog-top"><span class="passcode-modal-icon">✦</span><button class="passcode-modal-close" id="passcode-modal-close" type="button" aria-label="Close">×</button></div>
+                <div class="passcode-steps" id="passcode-stepper" aria-label="Passcode setup steps"><span data-step-mark="current">01</span><i></i><span data-step-mark="new">02</span><i></i><span data-step-mark="confirm">03</span></div>
+                <div id="passcode-step-current" hidden>
+                  <p class="passcode-step-kicker">STEP 1 OF 3</p><h2 id="passcode-modal-heading">Enter current passcode</h2><p class="passcode-step-copy">Confirm it’s you before changing your app passcode.</p>
+                  <label class="passcode-modal-label" for="current-passcode">Current passcode</label><input class="passcode-modal-input" id="current-passcode" type="password" autocomplete="current-password" />
+                </div>
+                <div id="passcode-step-new" hidden>
+                  <p class="passcode-step-kicker" id="new-step-kicker">STEP 2 OF 3</p><h2 id="passcode-new-heading">Choose a new passcode</h2><p class="passcode-step-copy">Use at least 4 characters. You’ll need it each time the app opens.</p>
+                  <label class="passcode-modal-label" for="new-passcode">New passcode</label><input class="passcode-modal-input" id="new-passcode" type="password" autocomplete="new-password" minlength="4" maxlength="64" />
+                </div>
+                <div id="passcode-step-confirm" hidden>
+                  <p class="passcode-step-kicker" id="confirm-step-kicker">STEP 3 OF 3</p><h2 id="passcode-confirm-heading">Confirm your passcode</h2><p class="passcode-step-copy">Enter it once more to finish setup.</p>
+                  <label class="passcode-modal-label" for="confirm-passcode">Confirm passcode</label><input class="passcode-modal-input" id="confirm-passcode" type="password" autocomplete="new-password" minlength="4" maxlength="64" />
+                </div>
+                <div id="passcode-step-remove" hidden>
+                  <p class="passcode-step-kicker">REMOVE PASSCODE</p><h2 id="passcode-remove-heading">Turn off app lock</h2><p class="passcode-step-copy">Enter your current passcode to remove the lock.</p>
+                  <label class="passcode-modal-label" for="remove-current-passcode">Current passcode</label><input class="passcode-modal-input" id="remove-current-passcode" type="password" autocomplete="current-password" />
+                </div>
+                <p class="passcode-modal-status" id="passcode-modal-status" role="status" aria-live="polite"></p>
+                <div class="passcode-modal-actions"><button class="btn btn-secondary" id="passcode-modal-back" type="button">Back</button><button class="btn btn-primary" id="passcode-modal-next" type="button">Continue <span>→</span></button></div>
+              </section>
+            </div>
+            <section class="page-group integration" aria-labelledby="integration-title">
+              <div><h2 id="integration-title">Discord Rich Presence</h2><p>Show your active ElysianNodes service in Discord.</p></div>
+              <button class="btn btn-secondary" id="discord-settings" type="button">Configure</button>
+            </section>
+            <section class="page-group integration" aria-labelledby="data-title">
+              <div><h2 id="data-title">App data</h2><p>Clear cached files, cookies, and saved website data for all ElysianNodes services. You may need to sign in again.</p></div>
+              <button class="btn btn-secondary" id="clear-app-data" type="button">Clear cache &amp; data</button>
+            </section>
+            <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <section class="app-page" id="discord-page" hidden>
+          <div class="page-content">
+            <button class="page-back" type="button" data-page-back>← <span>Back to settings</span></button>
+            <h1>Discord Rich Presence</h1>
+            <p class="page-intro">ElysianNodes connects to the Discord desktop app locally. No OAuth login or secret is needed.</p>
+            <section class="page-group discord-panel">
+              <p class="status" id="status" role="status" aria-live="polite">Checking Discord connection…</p>
+              <button class="btn btn-primary" id="connect" type="button">Reconnect</button>
+            </section>
+          </div>
+        </section>
+        <div class="embed-frame">
+          <div class="embed-slot" id="embed-slot" aria-hidden="true"></div>
+
+          <section class="error-panel" id="error-panel" hidden>
+            <div class="error-card">
+              <div class="error-mark"><svg class="icon"><use href="#icon-alert" /></svg></div>
+              <h1 id="error-title">This service is unreachable</h1>
+              <p class="error-detail" id="error-detail">The page could not be loaded.</p>
+              <div class="error-actions">
+                <button class="btn btn-primary" id="retry" type="button">
+                  <svg class="icon"><use href="#icon-reload" /></svg>
+                  Try again
+                </button>
+                <button class="btn btn-secondary" id="error-external" type="button">
+                  <svg class="icon"><use href="#icon-external" /></svg>
+                  Open in browser
+                </button>
+              </div>
+              <p class="error-url" id="error-url"></p>
+            </div>
+          </section>
+
+          <div class="boot" id="boot">
+            <span class="boot-spinner" aria-hidden="true"></span>
+            <p class="boot-title">Connecting to ElysianNodes…</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="renderer.js"></script>
+    <script type="module" src="settings.js"></script>
+    <script type="module" src="passcode-settings.js"></script>
+    <script type="module" src="discord-setup.js"></script>
+  </body>
+</html>

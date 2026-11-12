@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Electron build output
+dist/
+build/
+installed-app-debug/
+
+# Local runtime and debug logs
+*.log
+tmp-console-electron/
+
+# Local environment and editor files
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+

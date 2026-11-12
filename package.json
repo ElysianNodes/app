@@ -1,0 +1,57 @@
+{
+  "name": "elysiannodes-hub",
+  "productName": "ElysianNodes",
+  "version": "1.0.0",
+  "description": "ElysianNodes client hub - billing, game panel and webhosting in one desktop app",
+  "main": "src/main.js",
+  "author": "ElysianNodes",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "uk.elysiannodes.hub",
+    "productName": "ElysianNodes",
+    "copyright": "Copyright © 2026 ElysianNodes",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "ElysianNodes-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ElysianNodes",
+      "uninstallDisplayName": "ElysianNodes"
+    }
+  },
+  "dependencies": {
+    "discord-rpc": "^4.0.1"
+  }
+}
