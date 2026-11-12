@@ -7,6 +7,7 @@ const backBtn = document.getElementById('back');
 const forwardBtn = document.getElementById('forward');
 const reloadBtn = document.getElementById('reload');
 const externalBtn = document.getElementById('external');
+const lockAppBtn = document.getElementById('lock-app');
 const copyBtn = document.getElementById('copy');
 const hostEl = document.getElementById('url-host');
 const pathEl = document.getElementById('url-path');
@@ -71,6 +72,7 @@ function render(state) {
   document.body.classList.toggle('is-maximized', Boolean(state.maximized));
   document.body.classList.toggle('is-loading', Boolean(active.loading));
   document.body.classList.toggle('has-error', Boolean(active.error));
+  lockAppBtn.hidden = !state.passcodeConfigured;
 
   tabEls.forEach((tabEl, index) => {
     const tab = state.tabs[index];
@@ -184,6 +186,14 @@ document.getElementById('win-min').addEventListener('click', () => api.minimize(
 document.getElementById('win-max').addEventListener('click', () => api.toggleMaximize());
 document.getElementById('win-close').addEventListener('click', () => api.close());
 document.getElementById('open-settings').addEventListener('click', () => api.openSettings());
+lockAppBtn.addEventListener('click', async () => {
+  lockAppBtn.disabled = true;
+  try {
+    await api.lockWithPasscode();
+  } finally {
+    lockAppBtn.disabled = false;
+  }
+});
 document.querySelectorAll('[data-page-back]').forEach((button) => {
   button.addEventListener('click', () => showAppPage(button.closest('#discord-page') ? 'settings' : null));
 });

@@ -375,6 +375,7 @@ function openSftpUrl(url) {
 function buildState() {
   return {
     activeTab,
+    passcodeConfigured,
     maximized: Boolean(mainWindow && !mainWindow.isDestroyed() && mainWindow.isMaximized()),
     fullScreen: Boolean(mainWindow && !mainWindow.isDestroyed() && mainWindow.isFullScreen()),
     tabs: tabStates.map((tab) => ({ ...tab, error: tab.error ? { ...tab.error } : null }))
@@ -1005,6 +1006,18 @@ function registerIpc() {
   });
   ipcMain.handle('discord:get-status', () => ({ status: discordStatus, configured: true }));
   ipcMain.handle('passcode:get-state', () => ({ configured: passcodeConfigured, locked: isLocked }));
+  ipcMain.handle('passcode:lock', () => {
+    if (!passcodeConfigured || isLocked) return { ok: false };
+    isLocked = true;
+    appPage = 'passcode';
+    for (const view of views) {
+      if (view && !view.webContents.isDestroyed()) view.setVisible(false);
+    }
+    layoutViews();
+    if (uiContents && !uiContents.isDestroyed()) uiContents.send('app:page', 'passcode');
+    sendState();
+    return { ok: true };
+  });
   ipcMain.handle('passcode:unlock', async (_event, value) => {
     if (!isLocked || !passcodeConfigured) return { ok: !isLocked };
     const verification = await checkPasscode(value);
@@ -1037,6 +1050,7 @@ function registerIpc() {
     fs.renameSync(tempPath, passcodePath());
     passcodeRecord = { salt, hash };
     passcodeConfigured = true;
+    sendState();
     return { ok: true, configured: true };
   });
   ipcMain.handle('passcode:remove', async (_event, value) => {
@@ -1046,6 +1060,7 @@ function registerIpc() {
     fs.unlinkSync(passcodePath());
     passcodeRecord = null;
     passcodeConfigured = false;
+    sendState();
     return { ok: true, configured: false };
   });
   ipcMain.handle('settings:get', () => {

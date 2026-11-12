@@ -36,6 +36,7 @@ contextBridge.exposeInMainWorld('elysian', {
   saveSettings: (settings) => ipcRenderer.invoke('settings:save', settings),
   getPasscodeState: () => ipcRenderer.invoke('passcode:get-state'),
   unlockWithPasscode: (passcode) => ipcRenderer.invoke('passcode:unlock', passcode),
+  lockWithPasscode: () => ipcRenderer.invoke('passcode:lock'),
   verifyPasscode: (passcode) => ipcRenderer.invoke('passcode:verify', passcode),
   savePasscode: (settings) => ipcRenderer.invoke('passcode:save', settings),
   removePasscode: (settings) => ipcRenderer.invoke('passcode:remove', settings),
