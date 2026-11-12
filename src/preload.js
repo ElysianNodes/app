@@ -5,6 +5,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 let stateListener = null;
 let pageListener = null;
 let discordStatusListener = null;
+let updateStatusListener = null;
 
 contextBridge.exposeInMainWorld('elysian', {
   getState: () => ipcRenderer.invoke('app:get-state'),
@@ -42,6 +43,10 @@ contextBridge.exposeInMainWorld('elysian', {
   setAppPage: (page) => ipcRenderer.send('app:page', page),
   getDiscordStatus: () => ipcRenderer.invoke('discord:get-status'),
   connectDiscord: () => ipcRenderer.invoke('discord:connect'),
+  getUpdateState: () => ipcRenderer.invoke('updates:get-state'),
+  checkForUpdates: () => ipcRenderer.invoke('updates:check'),
+  downloadUpdate: () => ipcRenderer.invoke('updates:download'),
+  installUpdate: () => ipcRenderer.invoke('updates:install'),
   onAppPage: (callback) => {
     if (pageListener) ipcRenderer.removeListener('app:page', pageListener);
     pageListener = (_event, page) => callback(page);
@@ -51,5 +56,14 @@ contextBridge.exposeInMainWorld('elysian', {
     if (discordStatusListener) ipcRenderer.removeListener('discord:status', discordStatusListener);
     discordStatusListener = (_event, status) => callback(status);
     ipcRenderer.on('discord:status', discordStatusListener);
+  },
+  onUpdateStatus: (callback) => {
+    if (updateStatusListener) ipcRenderer.removeListener('updates:status', updateStatusListener);
+    updateStatusListener = (_event, status) => callback(status);
+    ipcRenderer.on('updates:status', updateStatusListener);
+    return () => {
+      if (updateStatusListener) ipcRenderer.removeListener('updates:status', updateStatusListener);
+      updateStatusListener = null;
+    };
   }
 });

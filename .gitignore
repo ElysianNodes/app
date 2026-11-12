@@ -3,7 +3,8 @@ node_modules/
 
 # Electron build output
 dist/
-build/
+/build/*
+!/build/icon.png
 installed-app-debug/
 
 # Local runtime and debug logs

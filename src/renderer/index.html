@@ -242,6 +242,17 @@
               <label class="setting-row"><span class="setting-copy"><strong>Start minimized</strong><small>Keep the window minimized when launched on boot.</small></span><input id="start-minimized" type="checkbox" /></label>
               <p class="note" id="platform-note" hidden>Automatic startup is available on Windows and macOS.</p>
             </section>
+            <section class="page-group update-settings" aria-labelledby="updates-title">
+              <div class="integration">
+                <div><h2 id="updates-title">Software updates</h2><p id="update-status" role="status" aria-live="polite">Loading update status…</p></div>
+                <div class="update-actions">
+                  <button class="btn btn-secondary" id="check-updates" type="button">Check now</button>
+                  <button class="btn btn-primary" id="download-update" type="button" hidden>Download update</button>
+                  <button class="btn btn-primary" id="install-update" type="button" hidden>Restart to update</button>
+                </div>
+              </div>
+              <div class="update-progress" id="update-progress" hidden><span id="update-progress-bar"></span></div>
+            </section>
             <section class="page-group passcode-settings" aria-labelledby="passcode-settings-title">
               <div class="integration">
                 <div>

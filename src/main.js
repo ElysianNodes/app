@@ -16,7 +16,63 @@ const fs = require('node:fs');
 const crypto = require('node:crypto');
 const { promisify } = require('node:util');
 const DiscordRPC = require('discord-rpc');
+const { autoUpdater } = require('electron-updater');
 const scrypt = promisify(crypto.scrypt);
+
+const UPDATE_SUPPORTED = process.platform === 'win32' && app.isPackaged;
+let updateState = {
+  status: 'idle',
+  message: 'Updates are checked automatically when ElysianNodes starts.',
+  version: null,
+  percent: 0,
+  supported: UPDATE_SUPPORTED
+};
+
+function publishUpdateState(nextState) {
+  updateState = { ...updateState, ...nextState };
+  if (uiContents && !uiContents.isDestroyed()) uiContents.send('updates:status', updateState);
+}
+
+function configureAutoUpdater() {
+  if (!UPDATE_SUPPORTED) return;
+
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.on('checking-for-update', () => publishUpdateState({
+    status: 'checking', message: 'Checking for updates…', percent: 0
+  }));
+  autoUpdater.on('update-available', (info) => publishUpdateState({
+    status: 'available',
+    message: `Version ${info.version} is available.`,
+    version: info.version,
+    percent: 0
+  }));
+  autoUpdater.on('update-not-available', (info) => publishUpdateState({
+    status: 'current',
+    message: `ElysianNodes is up to date${info.version ? ` (v${info.version})` : ''}.`,
+    version: info.version || null,
+    percent: 0
+  }));
+  autoUpdater.on('download-progress', (progress) => publishUpdateState({
+    status: 'downloading',
+    message: `Downloading update… ${Math.round(progress.percent)}%`,
+    percent: Math.max(0, Math.min(100, Math.round(progress.percent)))
+  }));
+  autoUpdater.on('update-downloaded', (info) => publishUpdateState({
+    status: 'downloaded',
+    message: `Version ${info.version} is ready to install.`,
+    version: info.version,
+    percent: 100
+  }));
+  autoUpdater.on('error', (error) => {
+    console.warn('[Updater] Update check failed:', error && error.message);
+    publishUpdateState({ status: 'error', message: 'Could not check for updates. Try again later.' });
+  });
+
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch(() => {});
+  }, 5000);
+}
 
 const DISCORD_CLIENT_ID = '957540452142313472';
 const DISCORD_RPC_RETRY_MS = 15000;
@@ -874,6 +930,35 @@ function hardenWebContents(contents) {
 
 function registerIpc() {
   ipcMain.handle('app:get-state', () => buildState());
+  ipcMain.handle('updates:get-state', () => ({
+    ...updateState,
+    appVersion: app.getVersion(),
+    supported: UPDATE_SUPPORTED
+  }));
+  ipcMain.handle('updates:check', async () => {
+    if (!UPDATE_SUPPORTED) return { ok: false, error: 'Updates are available in the installed Windows app.' };
+    if (isLocked) return { ok: false, error: 'Unlock the app before checking for updates.' };
+    try {
+      await autoUpdater.checkForUpdates();
+      return { ok: true };
+    } catch {
+      return { ok: false, error: 'Could not check for updates. Try again later.' };
+    }
+  });
+  ipcMain.handle('updates:download', async () => {
+    if (!UPDATE_SUPPORTED || isLocked || updateState.status !== 'available') return { ok: false };
+    try {
+      await autoUpdater.downloadUpdate();
+      return { ok: true };
+    } catch {
+      return { ok: false, error: 'Could not download the update. Try again later.' };
+    }
+  });
+  ipcMain.handle('updates:install', () => {
+    if (!UPDATE_SUPPORTED || isLocked || updateState.status !== 'downloaded') return { ok: false };
+    setImmediate(() => autoUpdater.quitAndInstall(false, true));
+    return { ok: true };
+  });
   ipcMain.handle('discord:get-status', () => ({ status: discordStatus, configured: true }));
   ipcMain.handle('passcode:get-state', () => ({ configured: passcodeConfigured, locked: isLocked }));
   ipcMain.handle('passcode:unlock', async (_event, value) => {
@@ -1115,6 +1200,7 @@ if (!gotLock) {
     configureSessions();
     registerIpc();
     createWindow();
+    configureAutoUpdater();
     if (!isLocked) connectDiscordRPC();
 
     app.on('activate', () => {

@@ -651,6 +651,10 @@ input[type="checkbox"]:disabled { opacity: .4; cursor: default; }
 .integration { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 14px; }
 .integration h2 { margin-bottom: 5px; }
 .integration p { margin: 0; }
+.update-settings { margin-top: 14px; }
+.update-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.update-progress { height: 4px; margin-top: 14px; overflow: hidden; border-radius: 99px; background: var(--surface-3); }
+.update-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--accent); transition: width .2s ease; }
 .save-status { min-height: 15px; margin: 10px 2px 0; color: var(--muted); font-size: 10px; }
 .discord-panel { max-width: 600px; }
 .discord-panel .status { min-height: 20px; margin: 0 0 16px; color: var(--text-secondary); font-size: 12px; }
