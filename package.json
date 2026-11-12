@@ -1,7 +1,7 @@
 {
   "name": "elysiannodes-hub",
   "productName": "ElysianNodes",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ElysianNodes client hub - billing, game panel and webhosting in one desktop app",
   "main": "src/main.js",
   "author": "ElysianNodes",
@@ -51,12 +51,14 @@
       "shortcutName": "ElysianNodes",
       "uninstallDisplayName": "ElysianNodes"
     },
-    "publish": [{
-      "provider": "github",
-      "owner": "ElysianNodes",
-      "repo": "app",
-      "releaseType": "release"
-    }]
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "ElysianNodes",
+        "repo": "app",
+        "releaseType": "release"
+      }
+    ]
   },
   "dependencies": {
     "discord-rpc": "^4.0.1",
