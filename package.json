@@ -12,7 +12,7 @@
     "dev": "electron . --dev",
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win",
-    "release": "electron-builder --win --publish always"
+    "release": "electron-builder --win --publish never"
   },
   "devDependencies": {
     "electron": "^45.2.3",

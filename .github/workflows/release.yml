@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing version tag to build, such as v1.0.0
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -15,6 +20,8 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag || github.ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -25,7 +32,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build and publish Windows installer
-        run: npm run release
+      - name: Build Windows installer and update metadata
+        run: npx electron-builder --win --publish never
+
+      - name: Publish release assets
+        shell: pwsh
+        run: |
+          $tag = "${{ inputs.release_tag }}"
+          if (-not $tag) { $tag = $env:GITHUB_REF_NAME }
+          $version = node -p "require('./package.json').version"
+          if ($tag -ne "v$version") { throw "Tag $tag does not match package version $version" }
+
+          $installer = "dist/ElysianNodes-Setup-$version.exe"
+          $files = @($installer, "$installer.blockmap", "dist/latest.yml")
+          foreach ($file in $files) {
+            if (-not (Test-Path $file)) { throw "Build output is missing: $file" }
+          }
+
+          gh release view $tag --repo ElysianNodes/app *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --repo ElysianNodes/app --title "ElysianNodes $version" --generate-notes --verify-tag
+          }
+          if ($LASTEXITCODE -ne 0) { throw "Could not create or find release $tag" }
+          gh release upload $tag @files --repo ElysianNodes/app --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
