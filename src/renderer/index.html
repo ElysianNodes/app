@@ -196,7 +196,7 @@
       <main class="content">
         <section class="app-page passcode-page" id="passcode-page" hidden>
           <div class="passcode-card">
-            <div class="passcode-mark"><img src="../assets/icon.ico" alt="" /></div>
+            <div class="passcode-mark"><img src="../assets/elysiannodes-logo.svg" alt="" /></div>
             <h1>Welcome back.</h1>
             <p>Enter your app passcode to continue to your services.</p>
             <form id="passcode-unlock-form">
@@ -209,7 +209,7 @@
         </section>
         <section class="app-page welcome-page" id="welcome-page" hidden>
           <div class="welcome-content">
-            <div class="welcome-brand"><img src="../assets/icon.ico" alt="" /><span>ELYSIANNODES</span></div>
+            <div class="welcome-brand"><img src="../assets/elysiannodes-logo.svg" alt="" /><span>ELYSIANNODES</span></div>
             <div class="welcome-hero">
               <div class="welcome-copy">
                 <h1>Welcome to<br /><em>ElysianNodes.</em></h1>
@@ -239,33 +239,32 @@
             <button class="page-back" type="button" data-page-back>← <span>Back to services</span></button>
             <h1>Settings</h1>
             <p class="page-intro">Choose how ElysianNodes starts and manage integrations.</p>
-            <section class="page-group" aria-labelledby="startup-title">
+            <section class="page-group settings-card settings-startup" aria-labelledby="startup-title">
               <h2 id="startup-title">Startup</h2>
               <label class="setting-row"><span class="setting-copy"><strong>Start on boot</strong><small>Open ElysianNodes when you sign in to your computer.</small></span><input id="auto-start" type="checkbox" /></label>
               <label class="setting-row"><span class="setting-copy"><strong>Start minimized</strong><small>Keep the window minimized when launched on boot.</small></span><input id="start-minimized" type="checkbox" /></label>
               <p class="note" id="platform-note" hidden>Automatic startup is available on Windows and macOS.</p>
             </section>
-            <section class="page-group update-settings" aria-labelledby="updates-title">
-              <div class="integration">
-                <div><h2 id="updates-title">Software updates</h2><p id="update-status" role="status" aria-live="polite">Loading update status…</p></div>
-                <div class="update-actions">
-                  <button class="btn btn-secondary" id="check-updates" type="button">Check now</button>
-                  <button class="btn btn-primary" id="download-update" type="button" hidden>Download update</button>
-                  <button class="btn btn-primary" id="install-update" type="button" hidden>Restart to update</button>
-                </div>
+            <section class="page-group settings-card settings-item" aria-labelledby="updates-title">
+              <div class="settings-item-copy">
+                <h2 id="updates-title">Software updates</h2>
+                <p id="update-status" role="status" aria-live="polite">Loading update status…</p>
+              </div>
+              <div class="update-actions">
+                <button class="btn btn-secondary" id="check-updates" type="button">Check now</button>
+                <button class="btn btn-primary" id="download-update" type="button" hidden>Download update</button>
+                <button class="btn btn-primary" id="install-update" type="button" hidden>Restart to update</button>
               </div>
               <div class="update-progress" id="update-progress" hidden><span id="update-progress-bar"></span></div>
             </section>
-            <section class="page-group passcode-settings" aria-labelledby="passcode-settings-title">
-              <div class="integration">
-                <div>
+            <section class="page-group settings-card settings-item passcode-settings" aria-labelledby="passcode-settings-title">
+              <div class="settings-item-copy">
                 <h2 id="passcode-settings-title">App passcode</h2>
                 <p id="passcode-description">Protect ElysianNodes with a passcode when the app opens.</p>
-                </div>
-                <div class="passcode-row-actions">
-                  <button class="btn btn-secondary" id="configure-passcode" type="button">Configure</button>
-                  <button class="btn btn-secondary" id="remove-passcode" type="button" hidden>Remove</button>
-                </div>
+              </div>
+              <div class="passcode-row-actions">
+                <button class="btn btn-secondary" id="configure-passcode" type="button">Configure</button>
+                <button class="btn btn-secondary" id="remove-passcode" type="button" hidden>Remove</button>
               </div>
               <p class="save-status" id="passcode-status" role="status" aria-live="polite"></p>
             </section>
@@ -293,12 +292,12 @@
                 <div class="passcode-modal-actions"><button class="btn btn-secondary" id="passcode-modal-back" type="button">Back</button><button class="btn btn-primary" id="passcode-modal-next" type="button">Continue <span>→</span></button></div>
               </section>
             </div>
-            <section class="page-group integration" aria-labelledby="integration-title">
-              <div><h2 id="integration-title">Discord Rich Presence</h2><p>Show your active ElysianNodes service in Discord.</p></div>
+            <section class="page-group settings-card settings-item" aria-labelledby="integration-title">
+              <div class="settings-item-copy"><h2 id="integration-title">Discord Rich Presence</h2><p>Show your active ElysianNodes service in Discord.</p></div>
               <button class="btn btn-secondary" id="discord-settings" type="button">Configure</button>
             </section>
-            <section class="page-group integration" aria-labelledby="data-title">
-              <div><h2 id="data-title">App data</h2><p>Clear cached files, cookies, and saved website data for all ElysianNodes services. You may need to sign in again.</p></div>
+            <section class="page-group settings-card settings-item" aria-labelledby="data-title">
+              <div class="settings-item-copy"><h2 id="data-title">App data</h2><p>Clear cached files, cookies, and saved website data for all ElysianNodes services. You may need to sign in again.</p></div>
               <button class="btn btn-secondary" id="clear-app-data" type="button">Clear cache &amp; data</button>
             </section>
             <p class="save-status" id="save-status" role="status" aria-live="polite"></p>

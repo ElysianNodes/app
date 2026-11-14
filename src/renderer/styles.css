@@ -635,7 +635,7 @@ body.is-loading #reload .icon-stop {
 .passcode-modal-status { min-height: 17px; margin: 9px 0 4px; color: #ff9999; font-size: 10px; line-height: 1.5; }
 .passcode-modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }.passcode-modal-actions .btn { min-width: 90px; min-height: 36px; justify-content: center; gap: 9px; }.passcode-modal-actions .btn-secondary { margin-right: auto; }
 .btn-danger { border-color: rgba(239,68,68,.42); background: rgba(128,34,42,.45); color: #ffd6d8; }.btn-danger:hover { border-color: #e65b63; background: rgba(154,39,48,.6); }
-.page-intro { margin: 0 0 24px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.page-intro { margin: 0 0 20px; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .page-group { padding: 18px 20px; border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-1); }
 .page-group h2 { margin: 0 0 10px; font-size: 13px; font-weight: 650; }
 .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 62px; border-top: 1px solid var(--divider); cursor: pointer; }
@@ -652,6 +652,32 @@ input[type="checkbox"]:disabled { opacity: .4; cursor: default; }
 .integration h2 { margin-bottom: 5px; }
 .integration p { margin: 0; }
 .update-settings { margin-top: 14px; }
+#settings-page .settings-card { margin: 0; padding: 16px 18px; }
+#settings-page .settings-card + .settings-card { margin-top: 10px; }
+#settings-page .passcode-settings { margin-top: 10px; }
+#settings-page .passcode-settings + .passcode-modal + .settings-card { margin-top: 10px; }
+#settings-page .settings-startup h2 { margin: 0 0 4px; }
+#settings-page .setting-row { min-height: 56px; }
+#settings-page .settings-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 20px; min-height: 76px; }
+#settings-page .settings-item-copy { min-width: 0; }
+#settings-page .settings-item-copy h2 { margin: 0 0 4px; }
+#settings-page .settings-item-copy p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+#settings-page .settings-item > .btn,
+#settings-page .update-actions .btn,
+#settings-page .passcode-row-actions .btn { min-height: 38px; }
+#settings-page .update-actions,
+#settings-page .passcode-row-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+#settings-page #update-progress { grid-column: 1 / -1; width: 100%; margin-top: 2px; }
+#settings-page #passcode-status { grid-column: 1 / -1; }
+#settings-page #passcode-status:empty { display: none; }
+#settings-page #save-status { margin: 8px 2px 0; }
+@media (max-width: 600px) {
+  #settings-page .settings-item { grid-template-columns: minmax(0, 1fr); row-gap: 12px; }
+  #settings-page .settings-item > .btn,
+  #settings-page .update-actions,
+  #settings-page .passcode-row-actions { justify-self: start; }
+  #settings-page .update-actions { justify-content: flex-start; }
+}
 .update-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .update-progress { height: 4px; margin-top: 14px; overflow: hidden; border-radius: 99px; background: var(--surface-3); }
 .update-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--accent); transition: width .2s ease; }
