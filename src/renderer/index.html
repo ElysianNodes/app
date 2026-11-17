@@ -130,6 +130,7 @@
       </header>
 
       <nav class="tabbar" role="tablist" aria-label="ElysianNodes services">
+        <span class="tab-indicator" aria-hidden="true"></span>
         <button class="tab is-active" type="button" role="tab" aria-selected="true" data-tab="0">
           <span class="tab-icon"><svg class="icon"><use href="#icon-billing" /></svg></span>
           <span class="tab-label">Billing Area</span>
@@ -209,43 +210,59 @@
         </section>
         <section class="app-page welcome-page" id="welcome-page" hidden>
           <div class="welcome-content">
-            <div class="welcome-brand"><img src="../assets/elysiannodes-logo.svg" alt="" /><span>ELYSIANNODES</span></div>
-            <div class="welcome-hero">
-              <div class="welcome-copy">
-                <h1>Welcome to<br /><em>ElysianNodes.</em></h1>
-                <p>A simpler way to reach the services behind your servers. Open your billing area, manage game servers, and access webhosting from one focused desktop app.</p>
-                <button class="btn btn-primary welcome-cta" id="welcome-start" type="button">Explore your hub <span>→</span></button>
-                <small class="welcome-footnote">Your account is still secured by ElysianNodes. Sign in with your usual details.</small>
-              </div>
-              <div class="welcome-visual" aria-hidden="true">
-                <div class="welcome-orb"></div><div class="welcome-grid"></div>
-                <div class="welcome-window">
-                  <div class="welcome-window-top"><span></span><span></span><span></span></div>
-                  <div class="welcome-window-body"><div class="welcome-window-nav"><i></i><i></i><i></i></div><div class="welcome-window-main"><small>YOUR CONTROL CENTER</small><strong>Everything<br />within reach.</strong><div><span>Billing</span><span>Game panel</span><span>Webhosting</span></div></div></div>
-                </div>
-                <div class="welcome-float welcome-float-one"><span>01</span> BILLING</div><div class="welcome-float welcome-float-two"><span>02</span> GAME PANEL</div>
-              </div>
+            <div class="welcome-brand"><img src="../assets/elysiannodes-logo.svg" alt="" /><span>ELYSIANNODES</span><i>APP TRAILER</i></div>
+            <div class="welcome-video-wrap">
+              <video id="welcome-trailer" autoplay muted controls playsinline preload="auto" aria-label="ElysianNodes app trailer">
+                <source src="https://boxes.elysiannodes.uk/api/storage/file/MyJHEmiGnBO60w_xRujxrQ" type="video/mp4" />
+                Your browser cannot play this video.
+              </video>
+              <p class="welcome-video-status" id="welcome-video-status" role="status" aria-live="polite">Watch the trailer or skip ahead to your services.</p>
             </div>
-            <div class="welcome-features">
-              <div><span>01</span><strong>One desktop hub</strong><small>Move between your ElysianNodes dashboards without juggling browser tabs.</small></div>
-              <div><span>02</span><strong>Your services, connected</strong><small>Quick access to billing, game server management, and webhosting.</small></div>
-              <div><span>03</span><strong>Made for everyday use</strong><small>A dedicated app with navigation and helpful shortcuts built in.</small></div>
+            <div class="welcome-video-actions">
+              <button class="btn btn-secondary" id="welcome-sound" type="button">Turn sound on</button>
+              <button class="btn btn-primary" id="welcome-skip" type="button">Skip intro <span>→</span></button>
             </div>
-            <div class="welcome-bottom"><span>Built to make managing your hosting feel a little more seamless.</span></div>
           </div>
         </section>
         <section class="app-page" id="settings-page" hidden>
           <div class="page-content">
             <button class="page-back" type="button" data-page-back>← <span>Back to services</span></button>
             <h1>Settings</h1>
-            <p class="page-intro">Choose how ElysianNodes starts and manage integrations.</p>
-            <section class="page-group settings-card settings-startup" aria-labelledby="startup-title">
+            <p class="page-intro">Personalize ElysianNodes and manage your services.</p>
+            <nav class="settings-tabs" role="tablist" aria-label="Settings categories">
+              <span class="settings-tab-indicator" aria-hidden="true"></span>
+              <button class="settings-tab is-active" type="button" role="tab" aria-selected="true" data-settings-tab="appearance">Appearance</button>
+              <button class="settings-tab" type="button" role="tab" aria-selected="false" data-settings-tab="startup">Startup</button>
+              <button class="settings-tab" type="button" role="tab" aria-selected="false" data-settings-tab="security">Security</button>
+              <button class="settings-tab" type="button" role="tab" aria-selected="false" data-settings-tab="others">Others</button>
+              <button class="settings-tab" type="button" role="tab" aria-selected="false" data-settings-tab="updates">Updates</button>
+            </nav>
+            <section class="page-group settings-card settings-startup" data-settings-panel="startup" aria-labelledby="startup-title">
               <h2 id="startup-title">Startup</h2>
               <label class="setting-row"><span class="setting-copy"><strong>Start on boot</strong><small>Open ElysianNodes when you sign in to your computer.</small></span><input id="auto-start" type="checkbox" /></label>
               <label class="setting-row"><span class="setting-copy"><strong>Start minimized</strong><small>Keep the window minimized when launched on boot.</small></span><input id="start-minimized" type="checkbox" /></label>
               <p class="note" id="platform-note" hidden>Automatic startup is available on Windows and macOS.</p>
             </section>
-            <section class="page-group settings-card settings-item" aria-labelledby="updates-title">
+            <section class="page-group settings-card settings-startup" data-settings-panel="appearance" aria-labelledby="services-title">
+              <h2 id="services-title">Visible services</h2>
+              <label class="setting-row"><span class="setting-copy"><strong>Billing Area</strong><small>Show Billing Area in the service navigation.</small></span><input class="service-visibility-toggle" data-service-index="0" type="checkbox" checked /></label>
+              <label class="setting-row"><span class="setting-copy"><strong>Game Panel</strong><small>Show Game Panel in the service navigation.</small></span><input class="service-visibility-toggle" data-service-index="1" type="checkbox" checked /></label>
+              <label class="setting-row"><span class="setting-copy"><strong>Webhosting Panel</strong><small>Show Webhosting Panel in the service navigation.</small></span><input class="service-visibility-toggle" data-service-index="2" type="checkbox" checked /></label>
+            </section>
+            <section class="page-group settings-card settings-item" data-settings-panel="appearance" aria-labelledby="appearance-title">
+              <div class="settings-item-copy">
+                <h2 id="appearance-title">Appearance</h2>
+                <p>Choose the accent color used throughout ElysianNodes.</p>
+              </div>
+              <div class="accent-picker-control">
+                <label class="accent-picker" for="accent-color">
+                  <span id="accent-color-value">#1F5BFF</span>
+                  <input id="accent-color" type="color" value="#1f5bff" aria-label="Choose accent color" />
+                </label>
+                <button class="btn btn-secondary" id="reset-accent-color" type="button">Reset</button>
+              </div>
+            </section>
+            <section class="page-group settings-card settings-item" data-settings-panel="updates" aria-labelledby="updates-title">
               <div class="settings-item-copy">
                 <h2 id="updates-title">Software updates</h2>
                 <p id="update-status" role="status" aria-live="polite">Loading update status…</p>
@@ -257,7 +274,7 @@
               </div>
               <div class="update-progress" id="update-progress" hidden><span id="update-progress-bar"></span></div>
             </section>
-            <section class="page-group settings-card settings-item passcode-settings" aria-labelledby="passcode-settings-title">
+            <section class="page-group settings-card settings-item passcode-settings" data-settings-panel="security" aria-labelledby="passcode-settings-title">
               <div class="settings-item-copy">
                 <h2 id="passcode-settings-title">App passcode</h2>
                 <p id="passcode-description">Protect ElysianNodes with a passcode when the app opens.</p>
@@ -270,7 +287,7 @@
             </section>
             <div class="passcode-modal" id="passcode-modal" hidden>
               <section class="passcode-dialog" role="dialog" aria-modal="true" aria-labelledby="passcode-modal-heading">
-                <div class="passcode-dialog-top"><span class="passcode-modal-icon">✦</span><button class="passcode-modal-close" id="passcode-modal-close" type="button" aria-label="Close">×</button></div>
+                <div class="passcode-dialog-top"><button class="passcode-modal-close" id="passcode-modal-close" type="button" aria-label="Close">×</button></div>
                 <div class="passcode-steps" id="passcode-stepper" aria-label="Passcode setup steps"><span data-step-mark="current">01</span><i></i><span data-step-mark="new">02</span><i></i><span data-step-mark="confirm">03</span></div>
                 <div id="passcode-step-current" hidden>
                   <p class="passcode-step-kicker">STEP 1 OF 3</p><h2 id="passcode-modal-heading">Enter current passcode</h2><p class="passcode-step-copy">Confirm it’s you before changing your app passcode.</p>
@@ -292,13 +309,17 @@
                 <div class="passcode-modal-actions"><button class="btn btn-secondary" id="passcode-modal-back" type="button">Back</button><button class="btn btn-primary" id="passcode-modal-next" type="button">Continue <span>→</span></button></div>
               </section>
             </div>
-            <section class="page-group settings-card settings-item" aria-labelledby="integration-title">
+            <section class="page-group settings-card settings-item" data-settings-panel="others" aria-labelledby="integration-title">
               <div class="settings-item-copy"><h2 id="integration-title">Discord Rich Presence</h2><p>Show your active ElysianNodes service in Discord.</p></div>
               <button class="btn btn-secondary" id="discord-settings" type="button">Configure</button>
             </section>
-            <section class="page-group settings-card settings-item" aria-labelledby="data-title">
+            <section class="page-group settings-card settings-item" data-settings-panel="others" aria-labelledby="data-title">
               <div class="settings-item-copy"><h2 id="data-title">App data</h2><p>Clear cached files, cookies, and saved website data for all ElysianNodes services. You may need to sign in again.</p></div>
               <button class="btn btn-secondary" id="clear-app-data" type="button">Clear cache &amp; data</button>
+            </section>
+            <section class="page-group settings-card settings-item" data-settings-panel="others" aria-labelledby="about-title">
+              <div class="settings-item-copy"><h2 id="about-title">About</h2><p>ElysianNodes <span id="app-version">Desktop App</span></p></div>
+              <button class="btn btn-secondary" id="replay-welcome" type="button" hidden>Replay first launch</button>
             </section>
             <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
           </div>

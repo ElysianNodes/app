@@ -3,6 +3,7 @@
 const api = window.elysian;
 
 const tabEls = Array.from(document.querySelectorAll('.tab'));
+const tabbar = document.querySelector('.tabbar');
 const backBtn = document.getElementById('back');
 const forwardBtn = document.getElementById('forward');
 const reloadBtn = document.getElementById('reload');
@@ -26,17 +27,79 @@ const settingsPage = document.getElementById('settings-page');
 const discordPage = document.getElementById('discord-page');
 const welcomePage = document.getElementById('welcome-page');
 const passcodePage = document.getElementById('passcode-page');
+const welcomeVideo = document.getElementById('welcome-trailer');
+const welcomeVideoStatus = document.getElementById('welcome-video-status');
+const welcomeSoundButton = document.getElementById('welcome-sound');
+const welcomeSkipButton = document.getElementById('welcome-skip');
 
 let latestState = null;
 let copyTimer = null;
+const serviceToggles = Array.from(document.querySelectorAll('.service-visibility-toggle'));
+let visibleServices = [true, true, true];
+
+try {
+  const saved = JSON.parse(localStorage.getItem('elysian-visible-services') || 'null');
+  if (Array.isArray(saved) && saved.length === tabEls.length && saved.some(Boolean)) {
+    visibleServices = saved.map(Boolean);
+  }
+} catch {}
+
+function updateServiceVisibility() {
+  const available = visibleServices.map((visible, index) => visible ? index : -1).filter((index) => index >= 0);
+  tabbar.style.setProperty('--visible-tabs-count', available.length);
+  tabEls.forEach((tab, index) => {
+    tab.classList.toggle('is-hidden', !visibleServices[index]);
+    tab.tabIndex = visibleServices[index] ? 0 : -1;
+    tab.setAttribute('aria-hidden', String(!visibleServices[index]));
+    if (serviceToggles[index]) serviceToggles[index].checked = visibleServices[index];
+  });
+  const activeIndex = latestState ? latestState.activeTab : 0;
+  const position = Math.max(0, available.indexOf(activeIndex));
+  tabbar.style.setProperty('--active-tab-index', position);
+  if (!visibleServices[activeIndex] && available.length) api.switchTab(available[0]);
+}
+
+serviceToggles.forEach((toggle) => {
+  toggle.addEventListener('change', () => {
+    const index = Number(toggle.dataset.serviceIndex);
+    const next = [...visibleServices];
+    next[index] = toggle.checked;
+    if (!next.some(Boolean)) {
+      toggle.checked = true;
+      return;
+    }
+    visibleServices = next;
+    try { localStorage.setItem('elysian-visible-services', JSON.stringify(visibleServices)); } catch {}
+    updateServiceVisibility();
+  });
+});
+updateServiceVisibility();
 
 function showAppPage(page) {
   const next = page === 'settings' || page === 'discord' || page === 'welcome' || page === 'passcode' ? page : null;
+  if (next === 'passcode') {
+    document.getElementById('unlock-status').textContent = '';
+    document.getElementById('unlock-passcode').value = '';
+    document.getElementById('unlock-button').disabled = false;
+  }
   appRoot.classList.toggle('is-page', next !== null);
   settingsPage.hidden = next !== 'settings';
   discordPage.hidden = next !== 'discord';
   welcomePage.hidden = next !== 'welcome';
   passcodePage.hidden = next !== 'passcode';
+  if (next === 'settings') window.dispatchEvent(new Event('settings:shown'));
+  if (next === 'welcome') {
+    welcomeVideo.currentTime = 0;
+    welcomeVideo.muted = true;
+    welcomeSoundButton.textContent = 'Turn sound on';
+    welcomeSkipButton.innerHTML = 'Skip intro <span>→</span>';
+    welcomeVideoStatus.textContent = 'Watch the trailer or skip ahead to your services.';
+    requestAnimationFrame(() => welcomeVideo.play().catch(() => {
+      welcomeVideoStatus.textContent = 'Use the video controls to play the trailer, or skip ahead to your services.';
+    }));
+  } else if (!welcomeVideo.paused) {
+    welcomeVideo.pause();
+  }
   api.setAppPage(next);
 }
 window.showAppPage = showAppPage;
@@ -86,6 +149,8 @@ function render(state) {
     tabEl.setAttribute('aria-busy', String(Boolean(tab.loading)));
     tabEl.title = tab.title ? `${tab.title}\n${tab.url}` : tab.url;
   });
+  const visibleIndex = visibleServices.slice(0, state.activeTab).filter(Boolean).length;
+  tabbar.style.setProperty('--active-tab-index', visibleIndex);
 
   hostEl.textContent = displayHost(active.url);
   pathEl.textContent = displayPath(active.url);
@@ -142,7 +207,9 @@ tabEls.forEach((tabEl, index) => {
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
     event.preventDefault();
     const direction = event.key === 'ArrowRight' ? 1 : -1;
-    const next = (index + direction + tabEls.length) % tabEls.length;
+    const available = visibleServices.map((visible, tabIndex) => visible ? tabIndex : -1).filter((tabIndex) => tabIndex >= 0);
+    const currentPosition = available.indexOf(index);
+    const next = available[(currentPosition + direction + available.length) % available.length];
     tabEls[next].focus();
     api.switchTab(next);
   });
@@ -225,9 +292,24 @@ document.getElementById('passcode-unlock-form').addEventListener('submit', async
     button.disabled = false;
   }
 });
-document.getElementById('welcome-start').addEventListener('click', () => {
+welcomeSkipButton.addEventListener('click', () => {
   try { localStorage.setItem('elysian-welcome-complete', '1'); } catch {}
+  welcomeVideo.pause();
   showAppPage(null);
+});
+
+welcomeSoundButton.addEventListener('click', () => {
+  welcomeVideo.muted = !welcomeVideo.muted;
+  welcomeSoundButton.textContent = welcomeVideo.muted ? 'Turn sound on' : 'Turn sound off';
+  if (welcomeVideo.paused) welcomeVideo.play().catch(() => {});
+});
+
+welcomeVideo.addEventListener('ended', () => {
+  welcomeVideoStatus.textContent = 'Trailer finished. Continue to your services when you’re ready.';
+  welcomeSkipButton.innerHTML = 'Continue <span>→</span>';
+});
+welcomeVideo.addEventListener('error', () => {
+  welcomeVideoStatus.textContent = 'The trailer could not be loaded. You can still continue to your services.';
 });
 
 document.addEventListener('keydown', (event) => {
@@ -255,14 +337,17 @@ document.addEventListener('keydown', (event) => {
 
   if (ctrl && ['1', '2', '3'].includes(event.key)) {
     event.preventDefault();
-    api.switchTab(Number(event.key) - 1);
+    const index = Number(event.key) - 1;
+    if (visibleServices[index]) api.switchTab(index);
     return;
   }
 
   if (ctrl && event.key === 'Tab') {
     event.preventDefault();
     const index = latestState ? latestState.activeTab : 0;
-    api.switchTab((index + 1) % tabEls.length);
+    const available = visibleServices.map((visible, tabIndex) => visible ? tabIndex : -1).filter((tabIndex) => tabIndex >= 0);
+    const position = available.indexOf(index);
+    api.switchTab(available[(position + 1) % available.length]);
   }
 });
 

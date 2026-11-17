@@ -5,6 +5,15 @@ const autoStart = document.getElementById('auto-start');
 const startMinimized = document.getElementById('start-minimized');
 const platformNote = document.getElementById('platform-note');
 const saveStatus = document.getElementById('save-status');
+const accentColor = document.getElementById('accent-color');
+const accentColorValue = document.getElementById('accent-color-value');
+const resetAccentColor = document.getElementById('reset-accent-color');
+const replayWelcomeButton = document.getElementById('replay-welcome');
+const appVersion = document.getElementById('app-version');
+const settingsTabsNav = document.querySelector('.settings-tabs');
+const settingsTabIndicator = document.querySelector('.settings-tab-indicator');
+const settingsTabs = Array.from(document.querySelectorAll('[data-settings-tab]'));
+const settingsPanels = Array.from(document.querySelectorAll('[data-settings-panel]'));
 const updateStatus = document.getElementById('update-status');
 const checkUpdatesButton = document.getElementById('check-updates');
 const downloadUpdateButton = document.getElementById('download-update');
@@ -12,6 +21,83 @@ const installUpdateButton = document.getElementById('install-update');
 const updateProgress = document.getElementById('update-progress');
 const updateProgressBar = document.getElementById('update-progress-bar');
 let saveTimer;
+function moveSettingsTabIndicator(tab) {
+  if (!tab || !settingsTabIndicator || !tab.offsetWidth) return;
+  settingsTabIndicator.style.width = `${tab.offsetWidth}px`;
+  settingsTabIndicator.style.transform = `translateX(${tab.offsetLeft}px)`;
+}
+
+function showSettingsCategory(category) {
+  const selectedTab = settingsTabs.find((tab) => tab.dataset.settingsTab === category);
+  settingsTabs.forEach((tab) => {
+    const selected = tab === selectedTab;
+    tab.classList.toggle('is-active', selected);
+    tab.setAttribute('aria-selected', String(selected));
+  });
+  moveSettingsTabIndicator(selectedTab);
+  settingsPanels.forEach((panel) => {
+    panel.hidden = panel.dataset.settingsPanel !== category;
+  });
+  try { localStorage.setItem('elysian-settings-category', category); } catch {}
+}
+window.addEventListener('resize', () => {
+  moveSettingsTabIndicator(settingsTabs.find((tab) => tab.classList.contains('is-active')));
+});
+window.addEventListener('settings:shown', () => {
+  requestAnimationFrame(() => moveSettingsTabIndicator(settingsTabs.find((tab) => tab.classList.contains('is-active'))));
+});
+if (settingsTabsNav && typeof ResizeObserver === 'function') {
+  new ResizeObserver(() => moveSettingsTabIndicator(settingsTabs.find((tab) => tab.classList.contains('is-active')))).observe(settingsTabsNav);
+}
+
+let initialSettingsCategory = 'appearance';
+try {
+  const savedCategory = localStorage.getItem('elysian-settings-category');
+  if (settingsTabs.some((tab) => tab.dataset.settingsTab === savedCategory)) initialSettingsCategory = savedCategory;
+} catch {}
+showSettingsCategory(initialSettingsCategory);
+settingsTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => showSettingsCategory(tab.dataset.settingsTab));
+  tab.addEventListener('keydown', (event) => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    const next = (index + direction + settingsTabs.length) % settingsTabs.length;
+    settingsTabs[next].focus();
+    showSettingsCategory(settingsTabs[next].dataset.settingsTab);
+  });
+});
+
+const DEFAULT_ACCENT = '#1f5bff';
+
+function applyAccentColor(color) {
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--accent-hover', `color-mix(in srgb, ${color} 82%, white)`);
+  document.documentElement.style.setProperty('--accent-soft', `color-mix(in srgb, ${color} 12%, transparent)`);
+  document.documentElement.style.setProperty('--accent-border', `color-mix(in srgb, ${color} 24%, transparent)`);
+  document.documentElement.style.setProperty('--glow-strong', `color-mix(in srgb, ${color} 16%, transparent)`);
+  document.documentElement.style.setProperty('--glow-weak', `color-mix(in srgb, ${color} 5%, transparent)`);
+  accentColor.value = color;
+  accentColorValue.textContent = color.toUpperCase();
+}
+
+try {
+  const savedAccent = localStorage.getItem('elysian-accent-color');
+  applyAccentColor(/^#[\da-f]{6}$/i.test(savedAccent || '') ? savedAccent : DEFAULT_ACCENT);
+} catch {
+  applyAccentColor(DEFAULT_ACCENT);
+}
+
+accentColor.addEventListener('input', () => {
+  applyAccentColor(accentColor.value);
+  try { localStorage.setItem('elysian-accent-color', accentColor.value); } catch {}
+});
+
+resetAccentColor.addEventListener('click', () => {
+  applyAccentColor(DEFAULT_ACCENT);
+  try { localStorage.removeItem('elysian-accent-color'); } catch {}
+});
+
 const debugSettings = (message) => console.info(`[SettingsDebug] ${message}`);
 debugSettings('loaded');
 
@@ -42,6 +128,16 @@ function save() {
 autoStart.addEventListener('change', () => { debugSettings(`autoStart changed ${autoStart.checked}`); save(); });
 startMinimized.addEventListener('change', () => { debugSettings(`startMinimized changed ${startMinimized.checked}`); save(); });
 document.getElementById('discord-settings').addEventListener('click', () => { debugSettings('Discord configure clicked'); window.showAppPage('discord'); });
+
+api.getAppInfo().then((info) => {
+  appVersion.textContent = info && info.version ? `v${info.version}` : 'Desktop App';
+  replayWelcomeButton.hidden = !(info && info.isDev);
+}).catch(() => { replayWelcomeButton.hidden = true; });
+
+replayWelcomeButton.addEventListener('click', () => {
+  try { localStorage.removeItem('elysian-welcome-complete'); } catch {}
+  window.showAppPage('welcome');
+});
 
 function showUpdateState(state) {
   if (!state) return;

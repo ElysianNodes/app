@@ -1097,6 +1097,7 @@ function registerIpc() {
       autoStartSupported: supported
     };
   });
+  ipcMain.handle('app:get-info', () => ({ version: app.getVersion(), isDev: process.argv.includes('--dev') }));
   ipcMain.handle('settings:save', (_event, value) => {
     if (isLocked) return { ok: false, error: 'Unlock the app before changing settings.' };
     if (!value || typeof value !== 'object') return { ok: false };
