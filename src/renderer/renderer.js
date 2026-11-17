@@ -32,6 +32,10 @@ const welcomeVideoStatus = document.getElementById('welcome-video-status');
 const welcomeSoundButton = document.getElementById('welcome-sound');
 const welcomeSkipButton = document.getElementById('welcome-skip');
 
+welcomeVideo.addEventListener('error', () => {
+  welcomeVideoStatus.textContent = 'The trailer could not be loaded. Skip ahead to your services.';
+});
+
 let latestState = null;
 let copyTimer = null;
 const serviceToggles = Array.from(document.querySelectorAll('.service-visibility-toggle'));
@@ -95,7 +99,7 @@ function showAppPage(page) {
     welcomeSkipButton.innerHTML = 'Skip intro <span>→</span>';
     welcomeVideoStatus.textContent = 'Watch the trailer or skip ahead to your services.';
     requestAnimationFrame(() => welcomeVideo.play().catch(() => {
-      welcomeVideoStatus.textContent = 'Use the video controls to play the trailer, or skip ahead to your services.';
+      welcomeVideoStatus.textContent = 'Press play to watch the trailer, or skip ahead to your services.';
     }));
   } else if (!welcomeVideo.paused) {
     welcomeVideo.pause();
