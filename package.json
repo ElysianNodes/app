@@ -1,7 +1,7 @@
 {
   "name": "elysiannodes-hub",
   "productName": "ElysianNodes",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "ElysianNodes client hub - billing, game panel and webhosting in one desktop app",
   "main": "src/main.js",
   "author": "ElysianNodes",
@@ -12,6 +12,7 @@
     "dev": "electron . --dev",
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win",
+    "dist:linux": "electron-builder --linux",
     "release": "electron-builder --win --publish never"
   },
   "devDependencies": {
@@ -50,6 +51,19 @@
       "createStartMenuShortcut": true,
       "shortcutName": "ElysianNodes",
       "uninstallDisplayName": "ElysianNodes"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "ElysianNodes-${version}.${ext}",
+      "category": "Utility"
     },
     "publish": [
       {

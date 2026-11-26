@@ -21,7 +21,8 @@ const DiscordRPC = require('discord-rpc');
 const { autoUpdater } = require('electron-updater');
 const scrypt = promisify(crypto.scrypt);
 
-const UPDATE_SUPPORTED = process.platform === 'win32' && app.isPackaged;
+const UPDATE_SUPPORTED =
+  (process.platform === 'win32' || process.platform === 'linux') && app.isPackaged;
 let updateState = {
   status: 'idle',
   message: 'Updates are checked automatically when ElysianNodes starts.',
@@ -1004,7 +1005,7 @@ function registerIpc() {
     supported: UPDATE_SUPPORTED
   }));
   ipcMain.handle('updates:check', async () => {
-    if (!UPDATE_SUPPORTED) return { ok: false, error: 'Updates are available in the installed Windows app.' };
+    if (!UPDATE_SUPPORTED) return { ok: false, error: 'Updates are available in the installed Windows or Linux app.' };
     if (isLocked) return { ok: false, error: 'Unlock the app before checking for updates.' };
     try {
       await autoUpdater.checkForUpdates();

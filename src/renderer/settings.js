@@ -142,7 +142,7 @@ replayWelcomeButton.addEventListener('click', () => {
 function showUpdateState(state) {
   if (!state) return;
   updateStatus.textContent = state.supported === false
-    ? 'Updates are available in the installed Windows app.'
+    ? 'Updates are available in the installed Windows or Linux app.'
     : state.message;
   checkUpdatesButton.disabled = !state.supported || state.status === 'checking' || state.status === 'downloading';
   downloadUpdateButton.hidden = state.status !== 'available';
